@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
+import { isTSEnumMember } from '@babel/types';
 
 const Generos = () => {
 	const [data, setData] = useState([])
@@ -16,9 +18,19 @@ const Generos = () => {
 			<tr key={record.id}>
 				<th scope='row'>{record.id}</th>
 				<td>{record.name}</td>
-				<td><button>+</button></td>
+				<td>
+					<button className='btn btn-danger' onClick={() => deleteGenero(record.id)}>Remover</button>
+					<Link className='btn btn-secondary ml-3' to={'/generos/' + record.id}>Editar</Link>
+				</td>
 			</tr>
 		)
+	}
+
+	const deleteGenero = id => {
+		axios.delete('api/genres/' + id).then(res => {
+			const filtrado = data.filter(item => item.id !== id)
+			setData(filtrado)
+		})
 	}
 
 
@@ -32,9 +44,11 @@ const Generos = () => {
 			</div>
 		)
 	}
+
 	return (
 		<div className='container'>
 			<h1>Genêros</h1>
+			<Link className='btn btn-primary mb-3' to='generos/novo'>Novo Genêro</Link> <br></br>
 			<table className='table table-dark'>
 				<thead>
 					<tr>

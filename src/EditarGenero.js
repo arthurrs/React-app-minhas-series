@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 
-const NovoGenero = () => {
+const EditarGenero = ({ match } ) => {
     const [name, setName] = useState('')
     const [sucess, setSucess] = useState(false)
+
+    useEffect(() => {
+        axios
+        .get('/api/genres/' + match.params.id)
+        .then(res => {
+            setName(res.data.name)
+        })
+    }, [match.params.id])
+
+    console.log(match)
 
     const changeState = evt => {
         setName(evt.target.value)
     }
 
-    
-
     const save = () => {
-        axios.post('/api/genres', {
+        axios.put('/api/genres/' + match.params.id, {
             name: name
         }).then(res => {
             setSucess(true)
@@ -25,13 +33,13 @@ const NovoGenero = () => {
     }
     return (
         <div className='container'>
-            <h1>Novo Genêro</h1>
+            <h1>Editar Genêro</h1>
             <form>
                 <div className='form-group'>
-                    <label htmlFor='name'>Nome</label>
+                    <label htmlFor='name'>Nome do Genêro</label>
                     <input type='text' value={name} onChange={changeState} className='form-control' id='name'  placeholder='Nome do genêro' />
                 </div>
-                <button type='button' onClick={save} className='btn btn-primary'>Adicionar Genêro</button>
+                <button type='button' onClick={save} className='btn btn-primary'>Salvar</button>
             </form>
 
         </div>
@@ -39,4 +47,4 @@ const NovoGenero = () => {
 }
 
 
-export default NovoGenero
+export default EditarGenero
